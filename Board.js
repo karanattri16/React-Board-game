@@ -6,37 +6,49 @@ function Board(props) {
   const [rows, setRows] = useState();
   const [columns, setColumns] = useState();
   let [totalMoves, setTotalMoves] = useState(0);
-  // const [arrays, setAarray] = useState([]);
-  let multiArr = [];
-  let visited = [];
-  var green = 0;
+  let [greenCell, setGreenCell] = useState(0);
+  const [arrays, setArray] = useState([]);
+  const [visitedArr, setVisitedArr] = useState();
+
   var moveCount = 0;
 
-  if (rows !== undefined && columns !== undefined) {
-    let count = 0;
-    for (let j = 0; j < rows; j++) {
-      let arr = [];
-      let visit = [];
-      for (let i = 0; i < columns; i++) {
-        arr[i] = count++;
-        visit[i] = false;
+  function boardSetup() {
+    var multiArr = [];
+    var visited = [];
+    if (
+      rows !== undefined &&
+      columns !== undefined &&
+      rows !== "" &&
+      columns !== ""
+    ) {
+      console.log("Grid is changing");
+      let count = 0;
+      for (let j = 0; j < rows; j++) {
+        let arr = [];
+        let visit = [];
+        for (let i = 0; i < columns; i++) {
+          arr[i] = count++;
+          visit[i] = false;
+        }
+        arr.push("br");
+        multiArr.push(arr);
+        visited.push(visit);
       }
-      arr.push("br");
-      multiArr.push(arr);
-      visited.push(visit);
+      console.log(multiArr);
+      placeCenter(multiArr);
+      greenBox(multiArr);
+      setVisitedArr([...visited]);
+      setArray([...multiArr]);
     }
-    console.log(multiArr);
-    placeCenter();
-    greenBox();
   }
-  function placeCenter() {
+  function placeCenter(arr) {
     if (rows > 0 && columns >= 0) {
       let { centerX, centerY } = centerBoard(rows, columns);
-      multiArr[centerX][centerY] = "C";
+      arr[centerX][centerY] = "C";
     }
   }
 
-  function greenBox() {
+  function greenBox(arr) {
     var rowArr = [];
     var colArr = [];
     for (let i = 0; i < rows; i++) {
@@ -51,46 +63,58 @@ function Board(props) {
       var row = rowArr[rowIndex];
       var col = colArr[colIndex];
 
-      if (multiArr[row][col] !== "C") {
-        multiArr[row][col] = "G";
-        green = green + 1;
+      if (arr[row][col] !== "C") {
+        arr[row][col] = "G";
+        greenCell = greenCell + 1;
       } else {
-        multiArr[row][col] = "C";
+        arr[row][col] = "C";
       }
       rowArr.splice(rowIndex, 1);
       colArr.splice(colIndex, 1);
     }
-    console.log("Green Count:", green);
-  }
-  function startRun() {
-    if (rows !== undefined && columns !== undefined)
-      move(parseInt(rows / 2), parseInt(columns / 2));
+    //console.log(green);
+    setGreenCell(greenCell);
+    console.log("Green Count:", greenCell);
   }
 
-  function move(row, col) {
-    console.log("green is " + green);
+  function startRun(e) {
+    e.preventDefault();
+    if (rows !== undefined && columns !== undefined) {
+      console.log(arrays);
+      move(parseInt(rows / 2), parseInt(columns / 2), arrays);
+    }
+  }
+
+  function move(row, col, arr) {
+    console.log("green is " + greenCell);
     if (
       row < rows &&
       row >= 0 &&
       col >= 0 &&
       col < columns &&
-      !visited[row][col] &&
-      green > 0
+      !visitedArr[row][col] &&
+      greenCell > 0
     ) {
+      //console.log("row is " + row, "col is " + col);
+
       console.log("totalMoves", totalMoves);
       setTotalMoves(++moveCount - 1);
-      visited[row][col] = true;
+      visitedArr[row][col] = true;
+      setVisitedArr([...visitedArr]);
       console.log("Row is " + row, "Col is " + col);
 
-      if (multiArr[row][col] === "G") {
-        green = green - 1;
-      }
-      // multiArr[row][col] = "C";
+      if (arr[row][col] === "G") {
+        greenCell = greenCell - 1;
 
-      move(row + 1, col);
-      move(row, col + 1);
-      move(row - 1, col);
-      move(row, col - 1);
+        setGreenCell(greenCell);
+      }
+
+      move(row + 1, col, arr);
+      move(row, col + 1, arr);
+      move(row - 1, col, arr);
+      move(row, col - 1, arr);
+    } else if (greenCell === 0) {
+      return;
     }
     return;
   }
@@ -111,10 +135,11 @@ function Board(props) {
           placeholder="Set Columns"
         />
 
-        <button onClick={() => startRun()}>Start Game</button>
+        <button onClick={(e) => startRun(e)}>Start Game</button>
+        <button onClick={(e) => boardSetup()}>Board</button>
       </div>
       <div>totalMoves:{totalMoves}</div>
-      {multiArr.map((array) =>
+      {arrays.map((array) =>
         array.map((item) =>
           item === "br" ? <br key={item} /> : <Cell key={item} item={item} />
         )

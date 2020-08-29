@@ -1,0 +1,26 @@
+.cell {
+  height: 40px;
+  width: 40px;
+  border: 1px solid black;
+  text-align: center;
+  display: inline-block;
+  color: white;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.board {
+  border: 5px solid white;
+}
+input {
+  margin: 10px;
+}
+.center {
+  background-color: red;
+}
+.green {
+  background-color: green;
+}

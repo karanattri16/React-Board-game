@@ -103,7 +103,7 @@ function Board(props) {
 
       if (arr[row][col] === "G") {
         greenCell = greenCell - 1;
-
+		setGreenCell(greenCell);
         //(greenCell);
       }
 

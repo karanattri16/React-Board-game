@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Cell from "./Cell";
 import { centerBoard } from "./center";
 
@@ -9,9 +9,7 @@ function Board(props) {
   let [greenCell, setGreenCell] = useState(0);
   const [arrays, setArray] = useState([]);
   const [visitedArr, setVisitedArr] = useState();
-
-  var moveCount = 0;
-
+  //let greenCell = 0;
   function boardSetup() {
     var multiArr = [];
     var visited = [];
@@ -72,7 +70,7 @@ function Board(props) {
       rowArr.splice(rowIndex, 1);
       colArr.splice(colIndex, 1);
     }
-    //console.log(green);
+    //console.log(greenCell);
     setGreenCell(greenCell);
     console.log("Green Count:", greenCell);
   }
@@ -86,7 +84,7 @@ function Board(props) {
   }
 
   function move(row, col, arr) {
-    console.log("green is " + greenCell);
+    //  console.log("green is " + greenCell);
     if (
       row < rows &&
       row >= 0 &&
@@ -96,9 +94,9 @@ function Board(props) {
       greenCell > 0
     ) {
       //console.log("row is " + row, "col is " + col);
-
+      totalMoves = totalMoves + 1;
       console.log("totalMoves", totalMoves);
-      setTotalMoves(++moveCount - 1);
+      setTotalMoves(totalMoves - 1);
       visitedArr[row][col] = true;
       setVisitedArr([...visitedArr]);
       console.log("Row is " + row, "Col is " + col);
@@ -106,7 +104,7 @@ function Board(props) {
       if (arr[row][col] === "G") {
         greenCell = greenCell - 1;
 
-        setGreenCell(greenCell);
+        //(greenCell);
       }
 
       move(row + 1, col, arr);
